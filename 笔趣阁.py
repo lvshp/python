@@ -4,6 +4,7 @@ import lxml
 import sys
 import os
 import re
+import ssl
 
 # 获取小说名和链接，并创建相对的目录
 def get_bookname(url):
@@ -11,12 +12,15 @@ def get_bookname(url):
     objects = etree.HTML(html.text)
     objs = objects.xpath("//ul[@class='list-group list-top']/li")
 
+    # 用来存储小说信息
     url_book = []
     for obj in objs:
         #获取小说名和小说链接
         book_name = obj.xpath("div[@class='row']/div[@class='col-md-5 col-sm-4 col-xs-9 text-overflow']/a/text()")[0]
         book_url =  obj.xpath("div[@class='row']/div[@class='col-md-5 col-sm-4 col-xs-9 text-overflow']/a/@href")[0]
 
+
+        # 去除不符合windows文件夹/文件命名规范的字符
         book_name = validateTitle(book_name)
         # 指定目录名
         dirname = "D:/笔趣阁小说/" + book_name
@@ -46,8 +50,13 @@ def get_bookurl(url):
         for list in book_list:
             list_name = list.xpath('a/text()')[0]
             list_url  = list.xpath('a/@href')[0]
+
+            # 网站上a标签内链接有个回车，所以去除回车
             list_url = list_url.replace('\n', "")
+
+            #  去除不符合windows命名规范的字符
             list_name = validateTitle(list_name)
+            # 拼接文件名
             filename = item['dirname']+"/"+list_name+".txt"
             info = {
                 'list_name' :list_name,
@@ -58,6 +67,7 @@ def get_bookurl(url):
         for list_content in list_info:
             # 如果程序重新运行，检查是否存在文件，如果存在就是上次运行下载过，跳过这个章节
             if os.path.exists(list_content['filename']):
+                print("此章节已下载，开始下载下一章")
                 continue
             contents = ""
             #小说可能存在两页或三页
