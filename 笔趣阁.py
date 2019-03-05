@@ -83,7 +83,7 @@ def get_bookurl(url):
                 content = content.xpath("//div[@id='content']/text()")
                 # print(type(content))
                 content = "\n".join(content)
-                content = "\n".join(content.split())
+                content = "\n\n".join(content.split())
                 # 把乱码转换为“？”
                 content = re.sub("�","?",content)
                 # 拼接所有页数的小说内容

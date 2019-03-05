@@ -6,9 +6,7 @@ import os
 import re
 from lxml import etree
 import lxml
-
-n = 0
-length = len(range(67))
+import ssl
 
 # 1. 请求网站获取相应信息
 def get_infos(url):
@@ -41,7 +39,10 @@ def get_infos(url):
 # 2.获取组图所有图片
 def get_img(img_infos):
     print("正在查找图片组图...")
+    n = 0
+    length = len(img_infos)
     for info in img_infos:
+        n = n + 1
         img_html = requests.get(info['img_group'], headers=headers)
         img_html.raise_for_status()
         img_html.encoding = "gb2312"
@@ -83,6 +84,8 @@ def get_img(img_infos):
             download(img_g_url, name)
             count = count + 1
             print("正在下载第：", count,'个...')
+        if n == length:
+            print("下载任务已全部完成")
 
 
 def download(url, name):
@@ -93,13 +96,9 @@ def download(url, name):
 
 
 headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.26 Safari/537.36 Core/1.63.5383.400 QQBrowser/10.0.1313.400'
-}
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.26 Safari/537.36 Core/1.63.5383.400 QQBrowser/10.0.1313.400'}
 
 for i in range(67):
     i = i + 1
     url = "http://www.xingmeng365.com/?ToPage=" + str(i)
     get_img(get_infos(url))
-    n = n+1
-    if n == length:
-        print("下载任务已完成")
