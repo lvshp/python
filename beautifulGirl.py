@@ -39,8 +39,6 @@ def get_infos(url):
 # 2.获取组图所有图片
 def get_img(img_infos):
     print("正在查找图片组图...")
-    n = 0
-    length = len(img_infos)
     for info in img_infos:
         n = n + 1
         img_html = requests.get(info['img_group'], headers=headers)
@@ -84,8 +82,6 @@ def get_img(img_infos):
             download(img_g_url, name)
             count = count + 1
             print("正在下载第：", count,'个...')
-        if n == length:
-            print("下载任务已全部完成")
 
 
 def download(url, name):
